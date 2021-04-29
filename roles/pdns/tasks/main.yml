@@ -1,0 +1,55 @@
+---
+- name: Intall software
+  apt:
+    name:
+      - apt-transport-https
+      - gnupg2
+    state: present
+
+- name: Import the PowerDNS APT Repository key from URL
+  apt_key:
+    url: "{{ pdns_auth_install_repo['gpg_key'] }}"
+    id: "{{ pdns_auth_install_repo['gpg_key_id'] }}"
+    state: present
+  register: _pdns_apt_key
+
+- name: Add the PowerDNS APT Repository
+  apt_repository:
+    filename: "{{ pdns_auth_install_repo['name'] }}"
+    repo: "{{ pdns_auth_install_repo['apt_repo'] }}"
+    state: present
+  register: _pdns_apt_repo
+
+- name: Update the APT cache
+  apt:
+    update_cache: yes
+  when: "_pdns_apt_key.changed or _pdns_apt_repo.changed"
+
+- name: Install packages
+    apt:
+      name "{{ item }}"
+      update_cache: yes
+      state: present
+    with_items:
+    - pdns-server
+    - pdns-backend-mysql
+
+- name: Import the PowerDNS MySQL schema
+  mysql_db:
+    name: "{{ mysql_database }}"
+    state: import
+    target: /usr/share/doc/pdns-backend-mysql/schema.mysql.sql
+  when:
+    - mysql_role == 'master'
+
+- name: Generate the PowerDNS configuration
+  template:
+    src: pdns.conf.j2
+    dest: "/etc/powerdns/pdns.conf"
+    mode: 0644
+
+- name: restart_pdns
+  service:
+    name: pdns
+    enabled: yes
+    state: restarted

@@ -1,0 +1,7 @@
+---
+nodejs_version: "12.x"
+pdns_admin_path: "/opt/pdns-admin"
+mysql_user: pdns_user
+mysql_database: pdns
+mysql_user_password: {{ mysql_user_password }}
+mysql_host: 127.0.0.1

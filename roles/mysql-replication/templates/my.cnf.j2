@@ -1,0 +1,82 @@
+[mysql]
+
+# CLIENT #
+port                           = 3306
+socket                         = /var/run/mysqld/mysqld.sock
+
+[mysqld]
+
+# GENERAL #
+user                           = mysql
+default-storage-engine         = InnoDB
+socket                         = /var/run/mysqld/mysqld.sock
+pid-file                       = /var/lib/mysql/mysql.pid
+lc-messages-dir                = /usr/share/mysql/
+lc_messages                    = en_US
+skip-name-resolve	       = ON
+skip-host-cache
+explicit_defaults_for_timestamp = ON
+
+# MyISAM #
+key-buffer-size                = 32M
+myisam-recover-options         = FORCE,BACKUP
+
+# SAFETY #
+max-allowed-packet             = 16M
+max-connect-errors             = 1000000
+innodb                         = FORCE
+
+# DATA STORAGE #
+datadir                        = /var/lib/mysql/
+
+# BINARY LOGGING #
+log-bin                        = /var/lib/mysql/mysql-bin
+expire-logs-days               = 2
+sync-binlog                    = 5
+
+# REPLICATION #
+server-id                      = {{ mysql_server_id }}
+read-only                      = ON
+skip-slave-start               = OFF
+log-slave-updates              = ON
+binlog-rows-query-log-events   = ON
+relay-log                      = /var/lib/mysql/relay-bin
+slave-net-timeout              = 60
+binlog_format                  = ROW
+binlog_row_image               = full
+gtid-mode                      = ON
+enforce-gtid-consistency       = ON
+
+replicate-wild-ignore-table     = sys.%
+replicate-wild-ignore-table     = mysql.%
+replicate-wild-ignore-table     = information_schema.%
+replicate-wild-ignore-table     = performance_schema.%
+
+# TRANSACTIONS #
+sql_mode                        = NO_ENGINE_SUBSTITUTION
+transaction-isolation           = READ-COMMITTED
+
+# CACHES AND LIMITS #
+tmp-table-size                 = 128M
+max-heap-table-size            = 128M
+query-cache-type               = 0
+query-cache-size               = 0
+max-connections                = 2000
+thread-cache-size              = 1024
+open-files-limit               = 65535
+table-definition-cache         = 1024
+table-open-cache               = 2048
+
+# INNODB #
+innodb-flush-method            = O_DIRECT
+innodb-log-files-in-group      = 2
+innodb-log-file-size           = 256M
+innodb-flush-log-at-trx-commit = 2
+innodb-file-per-table          = 1
+innodb-buffer-pool-size        = 12G
+
+# LOGGING #
+log-error                      = /var/lib/mysql/error.log
+log-queries-not-using-indexes  = 1
+slow-query-log                 = 1
+slow-query-log-file            = /var/lib/mysql/slow.log

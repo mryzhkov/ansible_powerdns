@@ -1,0 +1,7 @@
+---
+# defaults file for mysql
+
+mysql_database: pdns
+mysql_user: pdns_user
+mysql_user_password: {{ mysql_user_password }}
+mysql_user_priv: "{{ mysql_database }}.*:ALL"

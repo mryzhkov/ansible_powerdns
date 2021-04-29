@@ -1,0 +1,36 @@
+---
+- name: Import the PowerDNS Recursor APT Repository key
+  apt_key:
+    url: "{{ pdns_rec_install_repo['gpg_key'] }}"
+    id: "{{ pdns_rec_install_repo['gpg_key_id'] }}"
+    state: present
+  register: _pdns_rec_apt_key
+
+- name: Add the PowerDNS Recursor APT Repository
+  apt_repository:
+    filename: "{{ pdns_rec_install_repo['name'] }}"
+    repo: "{{ pdns_rec_install_repo['apt_repo'] }}"
+    state: present
+  register: _pdns_rec_apt_repo
+
+- name: Update the APT cache
+  apt:
+    update_cache: yes
+  when: "_pdns_rec_apt_key.changed or _pdns_rec_apt_repo.changed"
+
+- name: Install the PowerDNS Recursor
+  apt:
+    name: "pdns-recursor"
+    state: present
+
+- name: Generate the PowerDNS-recursor configuration
+  template:
+    src: pdns-recursor.conf.j2
+    dest: "/etc/powerdns/recursor.conf"
+    mode: 0644
+
+- name: restart_pdns-recursor
+  service:
+    name: pdns-recursor
+    enabled: yes
+    state: restarted

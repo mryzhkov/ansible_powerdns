@@ -1,0 +1,58 @@
+---
+- name: Copy my.cnf global MySQL configuration.
+  template:
+    src: my.cnf.j2
+    dest: /etc/mysql/my.cnf
+    mode: 0644
+
+- name: restart_mysql
+  service: 
+    name: mysql
+    enabled: yes
+    state: restarted
+
+- name: Create/ensure replication user .
+  mysql_user:
+    name: "{{ mysql_replication_user }}"
+    host: "{{ mysql_replication_host }}"
+    password: "{{ mysql_replication_password }}"
+    priv: "{{ mysql_replication_priv }}"
+    state: present
+  when:
+    - mysql_role == 'master'
+
+- name: Check slave replication status.
+  mysql_replication:
+    mode: getslave
+    login_host: "{{ mysql_replication_host }}"
+    login_user: "{{ mysql_replication_user }}"
+    login_password: "{{ mysql_replication_password }}"
+  register: slave
+  when:
+    - mysql_role == 'slave'
+
+- name: Check master replication status.
+  mysql_replication: 
+    mode: getmaster
+  delegate_to: "{{ master }}"
+  register: master
+  when:
+    - mysql_role == 'slave'
+
+- name: Configure replication on the slave.
+  mysql_replication:
+    mode: changemaster
+    master_host: "{{ mysql_replication_master }}"
+    master_user: "{{ mysql_replication_user }}"
+    master_password: "{{ mysql_replication_password }}"
+    master_log_file: "{{ master.File }}"
+    master_log_pos: "{{ master.Position }}"
+  when:
+    - (slave.Is_Slave is defined and not slave.Is_Slave) or (slave.Is_Slave is not defined and slave is failed)
+    - mysql_role == 'slave'
+
+- name: Start replication.
+  mysql_replication: 
+    mode: startslave
+  when:
+    - mysql_role == 'slave'

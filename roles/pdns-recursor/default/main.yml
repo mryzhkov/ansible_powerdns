@@ -1,0 +1,11 @@
+pdns_rec_install_repo:
+  apt_repo_origin: "repo.powerdns.com"
+  apt_repo: "deb [arch=amd64] https://repo.powerdns.com/{{ ansible_distribution | lower }} {{ ansible_distribution_release | lower }}-rec-44 main"
+  gpg_key: "https://repo.powerdns.com/FD380FBB-pub.asc"
+  gpg_key_id: "9FAAA5577E8FCF62093D036C1B0C6205FD380FBB"
+  name: "powerdns-rec-44"
+
+pdns_rec_config:
+  allow-from: '127.0.0.1'
+  local-address: '0.0.0.0'
+  forward-zones-recurse: 'example.com=127.0.0.1:5300'

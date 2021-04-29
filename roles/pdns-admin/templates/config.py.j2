@@ -1,0 +1,26 @@
+import os
+basedir = os.path.abspath(os.path.abspath(os.path.dirname(__file__)))
+
+### BASIC APP CONFIG
+BIND_ADDRESS = '0.0.0.0'
+PORT = 9191
+HSTS_ENABLED = False
+OFFLINE_MODE = False
+FILESYSTEM_SESSIONS_ENABLED = False
+
+# DATABASE CONFIG
+#You'll need MySQL-python
+SQLA_DB_USER = '{{ mysql_user }}'
+SQLA_DB_PASSWORD = '{{ mysql_user_password }}'
+SQLA_DB_HOST = '{{ mysql_host }}'
+SQLA_DB_NAME = '{{ mysql_database }}'
+SQLALCHEMY_TRACK_MODIFICATIONS = True
+
+
+### DATABASE - MySQL
+SQLALCHEMY_DATABASE_URI = 'mysql://'+SQLA_DB_USER+':'+SQLA_DB_PASSWORD+'@'+SQLA_DB_HOST+'/'+SQLA_DB_NAME
+
+
+#SAML Auth
+SAML_ENABLED = False
+SAML_ASSERTION_ENCRYPTED = True

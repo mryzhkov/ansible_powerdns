@@ -1,0 +1,36 @@
+---
+- name: Install software
+    apt:
+      name "{{ item }}"
+      update_cache: yes
+      state: present
+    with_items:
+    - mysql-server
+    - mysql-client
+
+- name: Copy my.cnf global MySQL configuration.
+  template:
+    src: my.cnf
+    dest: /etc/mysql/my.cnf
+    mode: 0644
+
+- name: restart_mysql
+  service: 
+    name: mysql
+    enabled: yes
+    state: restarted
+
+- name: Create database.
+  mysql_db:
+    name: "{{ mysql_database }}"
+    collation: 'utf8_general_ci'
+    encoding: 'utf8'
+    state: present
+
+- name: Create user.
+  mysql_user:
+    name: "{{ mysql_user }}"
+    host: "{{ mysql_host }"
+    password: "{{ mysql_user_password }}"
+    priv: "{{ mysql_user_priv }}"
+    state: "present"
