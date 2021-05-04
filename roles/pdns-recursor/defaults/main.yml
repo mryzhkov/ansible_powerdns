@@ -9,3 +9,4 @@ pdns_rec_config:
   allow-from: '127.0.0.1'
   local-address: '0.0.0.0'
   forward-zones-recurse: 'example.com=127.0.0.1:5300'
+

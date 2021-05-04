@@ -41,27 +41,26 @@
 
 - name: Intstall requirements
   apt:
-    name: "{{ item }}"
+    name: 
+      - python3-dev
+      - python3-mysqldb
+      - default-libmysqlclient-dev
+      - libsasl2-dev
+      - libldap2-dev
+      - libssl-dev
+      - libxml2-dev
+      - libxslt1-dev
+      - libxmlsec1-dev
+      - libffi-dev
+      - pkg-config
+      - virtualenv
+      - build-essential
+      - curl
+      - git
+      - yarn
+      - nodejs 
     update_cache: yes
     state: present
-  with_items:
-  - python3-dev
-  - python3-mysqldb
-  - default-libmysqlclient-dev
-  - libsasl2-dev
-  - libldap2-dev
-  - libssl-dev
-  - libxml2-dev
-  - libxslt1-dev
-  - libxmlsec1-dev
-  - libffi-dev
-  - pkg-config
-  - virtualenv
-  - build-essential
-  - curl
-  - git
-  - yarn
-  - nodejs
 
 - name: Clone PowerDNS-Admin
   git:
