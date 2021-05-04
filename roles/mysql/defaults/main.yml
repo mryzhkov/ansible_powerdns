@@ -1,7 +1,7 @@
 ---
 # defaults file for mysql
-
+mysql_host: 127.0.0.1
 mysql_database: pdns
 mysql_user: pdns_user
-mysql_user_password: {{ mysql_user_password }}
+mysql_user_password: dwqdqwd9d21d
 mysql_user_priv: "{{ mysql_database }}.*:ALL"

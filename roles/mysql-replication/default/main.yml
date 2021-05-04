@@ -1,5 +1,0 @@
-mysql_replication_master: {{ mysql_replication_master }}
-mysql_replication_user: replica
-mysql_replication_password: {{ mysql_replication_password }}
-mysql_replication_host: '%'
-mysql_replication_priv: '*.*:REPLICATION SLAVE,REPLICATION CLIENT'

@@ -1,0 +1,7 @@
+---
+mysql_replication_master: 10.114.0.3
+mysql_replication_user: 'replica'
+mysql_replication_password: "1213123"
+mysql_replication_host: "%"
+mysql_replication_priv: '*.*:REPLICATION SLAVE,REPLICATION CLIENT'
+master_ip: 178.128.194.154

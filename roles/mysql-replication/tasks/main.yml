@@ -11,7 +11,7 @@
     enabled: yes
     state: restarted
 
-- name: Create/ensure replication user .
+- name: Create/ensure replication user 
   mysql_user:
     name: "{{ mysql_replication_user }}"
     host: "{{ mysql_replication_host }}"
@@ -24,9 +24,6 @@
 - name: Check slave replication status.
   mysql_replication:
     mode: getslave
-    login_host: "{{ mysql_replication_host }}"
-    login_user: "{{ mysql_replication_user }}"
-    login_password: "{{ mysql_replication_password }}"
   register: slave
   when:
     - mysql_role == 'slave'
@@ -34,7 +31,7 @@
 - name: Check master replication status.
   mysql_replication: 
     mode: getmaster
-  delegate_to: "{{ master }}"
+  delegate_to: "{{ master_ip }}"
   register: master
   when:
     - mysql_role == 'slave'
@@ -56,3 +53,4 @@
     mode: startslave
   when:
     - mysql_role == 'slave'
+    - (slave.Is_Slave is defined and not slave.Is_Slave) or (slave.Is_Slave is not defined and slave is failed)

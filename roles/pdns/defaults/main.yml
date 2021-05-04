@@ -1,5 +1,5 @@
 ---
-pdns_auth_install_repo_44:
+pdns_auth_install_repo:
   apt_repo_origin: "repo.powerdns.com"
   apt_repo: "deb [arch=amd64] http://repo.powerdns.com/{{ ansible_distribution | lower }} {{ ansible_distribution_release | lower }}-auth-44 main"
   gpg_key: "http://repo.powerdns.com/FD380FBB-pub.asc"
@@ -8,5 +8,5 @@ pdns_auth_install_repo_44:
 
 mysql_user: pdns_user
 mysql_database: pdns
-mysql_user_password: {{ mysql_user_password }}
+mysql_user_password: "{{ mysql_user_password }}"
 mysql_host: 127.0.0.1

@@ -26,13 +26,21 @@
   when: "_pdns_apt_key.changed or _pdns_apt_repo.changed"
 
 - name: Install packages
-    apt:
-      name "{{ item }}"
-      update_cache: yes
-      state: present
-    with_items:
+  apt:
+    name: "{{ item }}"
+    update_cache: yes
+    state: present
+  with_items:
     - pdns-server
     - pdns-backend-mysql
+
+- name: Check database is empty
+  mysql_query:
+    login_db: "{{ mysql_database }}"
+    query: "SELECT COUNT(DISTINCT table_name) FROM information_schema.columns WHERE table_schema = '{{ mysql_database }}'"
+  register: _pdns_check_mysql
+  when:
+    - mysql_role == 'master'
 
 - name: Import the PowerDNS MySQL schema
   mysql_db:
@@ -41,6 +49,7 @@
     target: /usr/share/doc/pdns-backend-mysql/schema.mysql.sql
   when:
     - mysql_role == 'master'
+    - _pdns_check_mysql == '0'
 
 - name: Generate the PowerDNS configuration
   template:

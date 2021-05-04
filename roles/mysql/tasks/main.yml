@@ -1,16 +1,17 @@
 ---
 - name: Install software
-    apt:
-      name "{{ item }}"
-      update_cache: yes
-      state: present
-    with_items:
-    - mysql-server
-    - mysql-client
+  apt:
+    name: "{{ item }}"
+    update_cache: yes
+    state: present
+  with_items:
+    - default-mysql-server
+    - default-mysql-client
+    - python3-mysqldb
 
 - name: Copy my.cnf global MySQL configuration.
   template:
-    src: my.cnf
+    src: my.cnf.j2
     dest: /etc/mysql/my.cnf
     mode: 0644
 
@@ -30,7 +31,7 @@
 - name: Create user.
   mysql_user:
     name: "{{ mysql_user }}"
-    host: "{{ mysql_host }"
+    host: "{{ mysql_host }}"
     password: "{{ mysql_user_password }}"
     priv: "{{ mysql_user_priv }}"
     state: "present"
